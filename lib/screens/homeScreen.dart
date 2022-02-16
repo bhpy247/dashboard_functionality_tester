@@ -1,3 +1,4 @@
+import 'package:dashboard_functionality_tester/graphs/screens/graph_view.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -21,7 +22,9 @@ class HomeScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          commonButton(onTap: (){},text: "V"),
+          commonButton(onTap: (){
+            Navigator.push(context,MaterialPageRoute(builder: (context){return GraphView();}) );
+          },text: "V"),
           commonButton(onTap: (){},text: "H"),
           commonButton(onTap: (){},text: "B"),
           commonButton(onTap: (){},text: "M"),
