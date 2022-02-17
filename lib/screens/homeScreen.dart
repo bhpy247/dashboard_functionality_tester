@@ -1,3 +1,5 @@
+import 'package:dashboard_functionality_tester/screens/auth_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -22,7 +24,7 @@ class HomeScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           commonButton(onTap: (){},text: "V"),
-          commonButton(onTap: (){},text: "H"),
+          commonButton(onTap: () => Navigator.push(context, CupertinoPageRoute(builder: (context) => const  AuthScreen())),text: "H"),
           commonButton(onTap: (){},text: "B"),
           commonButton(onTap: (){},text: "M"),
         ],
