@@ -44,6 +44,7 @@ dependencies:
   window_manager: ^0.0.5
   yaru: ^0.2.0
   firedart: ^0.9.0+1
+  uuid: ^3.0.5
 
 dev_dependencies:
   flutter_test:

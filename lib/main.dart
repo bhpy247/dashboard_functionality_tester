@@ -1,6 +1,7 @@
 import 'package:dashboard_functionality_tester/screens/homeScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firedart/firestore/firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
 /// Initialize with a secondary app until dart-only initialization is merged.
@@ -16,7 +17,8 @@ void main() async{
   await windowManager.ensureInitialized();
 
   await Firebase.initializeApp(options: firebaseOptions);
-  await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+  Firestore.initialize("testing-project-2200b");
+  // await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
   runApp(const MyApp());
 }
 

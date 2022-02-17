@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_core_desktop/firebase_core_desktop.dart';
 import 'package:firedart/firestore/firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({Key? key}) : super(key: key);
@@ -21,37 +22,61 @@ class _AuthScreenState extends State<AuthScreen> {
         centerTitle: true,
         title: const Text("Authentication"),
       ),
+      body: body(),
     );
   }
+  DataCollection? data;
 
   Widget body(){
-    return Container(
-      child: MaterialButton(
-        onPressed: ()async{
-          Firestore.initialize("testing-project-2200b");
-          var map = await Firestore.instance.collection("data").get();
-          print(map);
-          // var data = DataCollection(data:map);
+    return Column(
+      children: [
+        Container(
+          child: MaterialButton(
+            onPressed: ()async{
+              // Firestore.initialize("testing-project-2200b");
 
-          // var users = UserCollection.fromMap(map);
-        },
-        child: Text("Firebase upload"),
-      ),
+              for(int i=0;i<30;i++) {
+                Map<String,dynamic>data = {
+                  "data $i": "value data $i"
+                };
+                print("Successfully completed");
+
+                String uuid = Uuid().v4();
+               await Firestore.instance.collection("data").document(uuid).set(data).then((value) {
+                 print("Successfully completed");
+               }).catchError((error){print("error in uploading: $error");});
+              }
+//               var map = await Firestore.instance.collection("data").get();
+//               print(map);
+//                data = DataCollection(data:map.first.map);
+// setState(() {
+//
+// });
+//               // var users = UserCollection.fromMap(map);
+            },
+            child: Text("Firebase upload"),
+          ),
+        ),
+       data != null? Visibility(
+            visible: data != null,
+            child: Text("Data: ${data!.data!.keys}")):Container(),
+      ],
+
     );
   }
 }
 
 
 class DataCollection{
-  Map<String,double>? data;
+  Map<String,dynamic>? data;
 
   DataCollection({this.data});
 
   static DataCollection fromMap(Map<String,dynamic> map){
-  Map<String,double>? data;
+  Map<String,dynamic>? data;
   data = {};
   try{
-    Map<String,double> dataMap = Map.from(Map.castFrom(map["data"] ?? {}));
+    Map<String,dynamic> dataMap = Map.from(Map.castFrom(map["data"] ?? {}));
     dataMap.forEach((key, value)  {
       if(key != null && key.isNotEmpty){
         data!.addAll({key: value});
