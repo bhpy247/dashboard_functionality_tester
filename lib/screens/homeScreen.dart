@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'bhavisha_screen.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -8,7 +10,11 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[850],
       //Colors.grey[850]
-      appBar: AppBar(title: Text("Home"),),
+      appBar: AppBar(
+        backgroundColor: Colors.grey[850],
+        shadowColor: Colors.grey[800]!,
+        foregroundColor: Colors.white,
+        title: Text("Home"),),
       body: mainBody(context),
     );
   }
@@ -23,7 +29,12 @@ class HomeScreen extends StatelessWidget {
         children: [
           commonButton(onTap: (){},text: "V"),
           commonButton(onTap: (){},text: "H"),
-          commonButton(onTap: (){},text: "B"),
+          commonButton(onTap: (){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const BhavishaScreen()),
+            );
+          },text: "B"),
           commonButton(onTap: (){},text: "M"),
         ],
       ),
