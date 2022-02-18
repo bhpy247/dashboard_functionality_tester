@@ -1,4 +1,4 @@
-import 'package:dashboard_functionality_tester/screens/homeScreen.dart';
+import 'package:dashboard_functionality_tester/screens/homescreen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
