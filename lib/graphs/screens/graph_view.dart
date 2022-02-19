@@ -1,3 +1,4 @@
+import 'package:dashboard_functionality_tester/common/modal_progress_hud.dart';
 import 'package:dashboard_functionality_tester/graphs/componants/create_pdf.dart';
 import 'package:dashboard_functionality_tester/graphs/componants/open_my_pdf.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,9 @@ class GraphView extends StatefulWidget {
 
 class _GraphViewState extends State<GraphView> {
   ScreenshotController screenshotController = ScreenshotController();
+  bool theme=true;
+  bool isLoading=false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,29 +29,43 @@ class _GraphViewState extends State<GraphView> {
         actions: [
           InkWell(
               onTap: ()async{
+                setState(() {
+                  isLoading=true;
+                });
+                theme=false;
+                setState(() {});
                 final image=await screenshotController.capture();
                 final pdf= await CreateImagePdf().generatePdf(image!);
+                theme=true;
                 OpenMyPdf.openFile(pdf!);
+                setState(() {
+                  isLoading=false;
+                });
               },
               child: Icon(Icons.print,color: Colors.white,)),
           Container(width: 80,)
         ],
       ),
-      body: Screenshot(
-        controller: screenshotController,
-        child: Container(
-          height: 300,
-          width: 500,
-          color: Colors.teal,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text("Hello there",style: TextStyle(fontSize: 30,color: Colors.white),),
-              Text("It's Viren",style: TextStyle(fontSize: 30,color: Colors.white),),
-              Text("testing screenshot pdf",style: TextStyle(fontSize: 30,color: Colors.white),),
-            ],
-          ),
+      body: ModalProgressHUD(
+        inAsyncCall: isLoading,
+        child: Center(
+          child: Screenshot(
+            controller: screenshotController,
+            child: Container(
+              height: 300,
+              width: 500,
+              color:theme? Colors.teal:Colors.black54,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text("Hello there",style: TextStyle(fontSize: 30,color: theme? Colors.white:Colors.red),),
+                  Text("It's Viren",style: TextStyle(fontSize: 30,color:theme? Colors.white:Colors.red),),
+                  Text("testing screenshot pdf",style: TextStyle(fontSize: 30,color:theme? Colors.white:Colors.red),),
+                ],
+              ),
 
+            ),
+          ),
         ),
       )
 
