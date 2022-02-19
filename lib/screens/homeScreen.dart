@@ -24,7 +24,9 @@ class HomeScreen extends StatelessWidget {
           commonButton(onTap: (){},text: "V"),
           commonButton(onTap: (){},text: "H"),
           commonButton(onTap: (){},text: "B"),
-          commonButton(onTap: (){},text: "M"),
+          commonButton(onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context){return HomeScreen();}));
+          },text: "M"),
         ],
       ),
     );
