@@ -1,5 +1,7 @@
-import 'package:fl_chart/fl_chart.dart';
+import 'package:dashboard_functionality_tester/graphs/componants/create_pdf.dart';
+import 'package:dashboard_functionality_tester/graphs/componants/open_my_pdf.dart';
 import 'package:flutter/material.dart';
+import 'package:screenshot/screenshot.dart';
 
 
 class GraphView extends StatefulWidget {
@@ -12,6 +14,7 @@ class GraphView extends StatefulWidget {
 }
 
 class _GraphViewState extends State<GraphView> {
+  ScreenshotController screenshotController = ScreenshotController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,21 +24,41 @@ class _GraphViewState extends State<GraphView> {
         title: Text("Graphs"),
         actions: [
           InkWell(
-              onTap: (){
-                
+              onTap: ()async{
+                final image=await screenshotController.capture();
+                final pdf= await CreateImagePdf().generatePdf(image!);
+                OpenMyPdf.openFile(pdf!);
               },
               child: Icon(Icons.print,color: Colors.white,)),
           Container(width: 80,)
         ],
       ),
-      body: Container(
+      body: Screenshot(
+        controller: screenshotController,
+        child: Container(
+          height: 300,
+          width: 500,
+          color: Colors.teal,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text("Hello there",style: TextStyle(fontSize: 30,color: Colors.white),),
+              Text("It's Viren",style: TextStyle(fontSize: 30,color: Colors.white),),
+              Text("testing screenshot pdf",style: TextStyle(fontSize: 30,color: Colors.white),),
+            ],
+          ),
+
+        ),
+      )
+
+     /* Container(
         padding: EdgeInsets.symmetric(horizontal: 20,vertical: 40),
         child: Column(
           children: [
             Expanded(
               child: LineChart(
                 LineChartData(
-                    minX:0,
+                  minX:0,
                   maxX: 10,
                   minY: 0,
                   maxY: 18,
@@ -59,7 +82,7 @@ class _GraphViewState extends State<GraphView> {
           ],
 
         ),
-      ),
+      ),*/
     );
   }
 }
