@@ -8,6 +8,9 @@ class BhavishaScreen extends StatefulWidget {
 }
 
 class _BhavishaScreenState extends State<BhavishaScreen> {
+  TextEditingController textController = TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,6 +27,9 @@ class _BhavishaScreenState extends State<BhavishaScreen> {
   }
   Widget mainBody(){
     return Container(
+      child: TextField(
+        controller: textController,
+      ),
 
     );
   }
