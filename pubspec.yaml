@@ -39,6 +39,7 @@ dependencies:
   pdf: ^3.7.1
   url_launcher: ^6.0.20
   path_provider: ^2.0.9
+  flutter_libserialport: ^0.2.3
 
 dev_dependencies:
   flutter_test:

@@ -1,3 +1,4 @@
+import 'package:dashboard_functionality_tester/connection/connection_screen.dart';
 import 'package:dashboard_functionality_tester/graphs/screens/graph_view.dart';
 import 'package:flutter/material.dart';
 
@@ -27,7 +28,9 @@ class HomeScreen extends StatelessWidget {
           },text: "Graph Test",),
           commonButton(onTap: (){},text: "Manual Control"),
           commonButton(onTap: (){},text: "Settings"),
-          commonButton(onTap: (){},text: "Live Test"),
+          commonButton(onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context){return mainPage();}));
+          },text: "Live Test"),
         ],
       ),
     );
