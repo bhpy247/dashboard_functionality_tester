@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../sample/main_page.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -25,7 +27,7 @@ class HomeScreen extends StatelessWidget {
           commonButton(onTap: (){},text: "H"),
           commonButton(onTap: (){},text: "B"),
           commonButton(onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context){return HomeScreen();}));
+            Navigator.push(context, MaterialPageRoute(builder: (context){return mainPage();}));
           },text: "M"),
         ],
       ),
