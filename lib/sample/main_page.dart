@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
@@ -25,6 +26,8 @@ class _mainPageState extends State<mainPage> {
   late SerialPort port;
   late SerialPortReader reader;
   String displayData = "";
+
+  Socket? socket;
 
   @override
   void initState() {
@@ -111,23 +114,23 @@ class _mainPageState extends State<mainPage> {
     port = SerialPort("COM6");
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Sample Desktop",
-          style: TextStyle(
+          style: const TextStyle(
               fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.deepPurple,
       ),
       body: Column(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 40,
           ),
           getDropdowRow(),
-          SizedBox(
+          const SizedBox(
             height: 40,
           ),
-          getListColumn()
+          Expanded(child: getListColumn())
         ],
       ),
     );
@@ -149,7 +152,7 @@ class _mainPageState extends State<mainPage> {
             },
           ),
         ),
-        SizedBox(
+        const SizedBox(
           width: 15,
         ),
         MaterialButton(
@@ -161,8 +164,8 @@ class _mainPageState extends State<mainPage> {
             setState(() {});
           },
           child: Container(
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 9),
-              child: Text(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 9),
+              child: const Text(
                 "Refresh",
                 style: TextStyle(
                     color: Colors.white,
@@ -175,137 +178,152 @@ class _mainPageState extends State<mainPage> {
   }
 
   Widget getListColumn() {
-    return Flexible(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          MaterialButton(
-            color: Colors.deepPurple,
-            onPressed: () {
-              setPort();
-            },
-            child: Container(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 9),
-                child: Text(
-                  "Set Port",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17),
-                )),
-          ),
-          MaterialButton(
-            color: Colors.deepPurple,
-            onPressed: () {
-              startReading();
-            },
-            child: Container(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 9),
-                child: Text(
-                  "start reading",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17),
-                )),
-          ),
-          MaterialButton(
-            color: Colors.deepPurple,
-            onPressed: () {
-              sendData();
-            },
-            child: Container(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 9),
-                child: Text(
-                  "Send Data",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17),
-                )),
-          ),
-          MaterialButton(
-            color: Colors.deepPurple,
-            onPressed: () {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        MaterialButton(
+          color: Colors.deepPurple,
+          onPressed: () async {
+            //setPort();
 
-              port.config.dtr=1;
-              //port.refreshConfig();
+            socket = await Socket.connect("localhost", 6667);
+            Uint8List data = await socket!.first;
+            print("Data:${data}");
+            String stringData = utf8.decode(data);
+            print("Data String:${stringData}");
+          },
+          child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 9),
+              child: const Text(
+                "Set Port",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17),
+              )),
+        ),
+        MaterialButton(
+          color: Colors.deepPurple,
+          onPressed: () async {
+            //startReading();
+            if(socket != null) {
+              print("In Socket Write");
+              //socket!.write(utf8.encode("In Socker Write"));
+              socket!.write("Dishant\n");
+              //socket!.write(utf8.encode("Dishant"));
 
-              print("off");
-              Future.delayed(Duration(seconds: 3),(){
-                port.config.dtr=0;
-                print("on");
-               // port.refreshConfig();
-              });
+              await Future.delayed(Duration(seconds: 2));
 
-            },
-            child: Container(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 9),
-                child: Text(
-                  "Restart port",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17),
-                )),
-          ),
-          MaterialButton(
-            color: Colors.deepPurple,
-            onPressed: () {
-              reader.close();
-              print("stream close");
-              SerialPortReader reader1 = SerialPortReader(port);
-              reader1.stream.listen(
-                      (data) {
-                    print('received: $data');
-                    print('received: ${String.fromCharCodes(data)}');
-                    // displayData += data.toString();
-                    //print('received: $data');
-                  },
-                  onDone: (){print("on done");}
-              ).onData((data) {
-                print("onData from close stream ${String.fromCharCodes(data)}");
-              });
+              socket!.write("Agrawal\n");
+              print("In Socket Write Completed");
+            }
+          },
+          child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 9),
+              child: const Text(
+                "start reading",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17),
+              )),
+        ),
+        MaterialButton(
+          color: Colors.deepPurple,
+          onPressed: () {
+            sendData();
+          },
+          child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 9),
+              child: const Text(
+                "Send Data",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17),
+              )),
+        ),
+        MaterialButton(
+          color: Colors.deepPurple,
+          onPressed: () {
 
-            },
-            child: Container(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 9),
-                child: Text(
-                  "Restart sream",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17),
-                )),
-          ),
+            port.config.dtr=1;
+            //port.refreshConfig();
 
-          // SizedBox(
-          //   height: 10,
-          // ),
-          // Flexible(
-          //   child: Container(
-          //     margin: EdgeInsets.symmetric(horizontal: 300),
-          //     padding: EdgeInsets.symmetric(vertical: 20),
-          //     decoration: BoxDecoration(
-          //         color: Colors.white, border: Border.all(color: Colors.black)),
-          //     child: Column(
-          //       mainAxisSize: MainAxisSize.min,
-          //       crossAxisAlignment: CrossAxisAlignment.center,
-          //       children: [
-          //         Flexible(
-          //           child: ListView.builder(
-          //               shrinkWrap: true,
-          //               itemCount: 12,
-          //               itemBuilder: (context, index) {
-          //                 return getList("$index");
-          //               }),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
-        ],
-      ),
+            print("off");
+            Future.delayed(const Duration(seconds: 3),(){
+              port.config.dtr=0;
+              print("on");
+             // port.refreshConfig();
+            });
+
+          },
+          child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 9),
+              child: const Text(
+                "Restart port",
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17),
+              )),
+        ),
+        MaterialButton(
+          color: Colors.deepPurple,
+          onPressed: () {
+            reader.close();
+            print("stream close");
+            SerialPortReader reader1 = SerialPortReader(port);
+            reader1.stream.listen(
+                    (data) {
+                  print('received: $data');
+                  print('received: ${String.fromCharCodes(data)}');
+                  // displayData += data.toString();
+                  //print('received: $data');
+                },
+                onDone: (){print("on done");}
+            ).onData((data) {
+              print("onData from close stream ${String.fromCharCodes(data)}");
+            });
+
+          },
+          child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 9),
+              child: const Text(
+                "Restart sream",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17),
+              )),
+        ),
+
+        // SizedBox(
+        //   height: 10,
+        // ),
+        // Flexible(
+        //   child: Container(
+        //     margin: EdgeInsets.symmetric(horizontal: 300),
+        //     padding: EdgeInsets.symmetric(vertical: 20),
+        //     decoration: BoxDecoration(
+        //         color: Colors.white, border: Border.all(color: Colors.black)),
+        //     child: Column(
+        //       mainAxisSize: MainAxisSize.min,
+        //       crossAxisAlignment: CrossAxisAlignment.center,
+        //       children: [
+        //         Flexible(
+        //           child: ListView.builder(
+        //               shrinkWrap: true,
+        //               itemCount: 12,
+        //               itemBuilder: (context, index) {
+        //                 return getList("$index");
+        //               }),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // ),
+      ],
     );
   }
 
@@ -313,7 +331,7 @@ class _mainPageState extends State<mainPage> {
     return Text(
       "List Item $item",
       textAlign: TextAlign.center,
-      style: TextStyle(
+      style: const TextStyle(
           fontWeight: FontWeight.bold, fontSize: 20, color: Colors.black),
     );
   }
