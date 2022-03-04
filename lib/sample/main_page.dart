@@ -33,18 +33,27 @@ class _mainPageState extends State<mainPage> {
   void initState() {
     initPorts();
     super.initState();
+    port = SerialPort("COM8");
    // dropdownList = [];
+  }
+
+  @override
+  void dispose() {
+    port.dispose();
+    super.dispose();
   }
 
   void initPorts() {
     portList = SerialPort.availablePorts;
+    print("Port List:${portList}");
+    port = SerialPort(portList.isNotEmpty ? portList.first : "COM8");
    // print("obje   $portList");
 
 
     //print(port.isOpen);
   }
 
-  void setPort() {
+  Future<void> setPort() async {
     print("set port");
     if (port.isOpen) {
       print("port is open");
@@ -52,12 +61,36 @@ class _mainPageState extends State<mainPage> {
       print("port is close");
     }
 
+
+
     port.config.baudRate = 115200;
     port.config.bits=8;
     port.config.stopBits=1;
     port.config.parity=0;
+    port.config.setFlowControl(SerialPortFlowControl.xonXoff);
+    /*port.config.xonXoff=SerialPortXonXoff.inOut;
+    port.config.rts=SerialPortRts.off;
+    port.config.dtr = SerialPortDtr.off;*/
 
-    port.openRead();
+    //await Future.delayed(Duration(seconds: 1));
+
+    //port.config.dtr = 1;
+
+
+    port.openReadWrite();
+    print("DTR:${port.config.dtr}");
+
+
+
+    /*port.config.rts=0;
+    port.config.dtr=0;*/
+
+    startReading();
+
+    print("RTS:${port.config.rts}");
+    Future.delayed(Duration(seconds: 5), () {
+      print("RTS:${port.config.rts}");
+    });
 
     print(port.isOpen);
     print(port.isOpen);
@@ -72,7 +105,7 @@ class _mainPageState extends State<mainPage> {
 
     reader.stream.listen(
     (data) {
-      print('received: $data');
+      print('received Data in Stream: $data');
       print('received: ${String.fromCharCodes(data)}');
       // displayData += data.toString();
       //print('received: $data');
@@ -111,7 +144,6 @@ class _mainPageState extends State<mainPage> {
 
   @override
   Widget build(BuildContext context) {
-    port = SerialPort("COM6");
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -184,18 +216,40 @@ class _mainPageState extends State<mainPage> {
         MaterialButton(
           color: Colors.deepPurple,
           onPressed: () async {
-            //setPort();
+            setPort();
 
-            socket = await Socket.connect("localhost", 6667);
+            /*socket = await Socket.connect("localhost", 6667);
             Uint8List data = await socket!.first;
             print("Data:${data}");
             String stringData = utf8.decode(data);
-            print("Data String:${stringData}");
+            print("Data String:${stringData}");*/
           },
           child: Container(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 9),
               child: const Text(
                 "Set Port",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17),
+              )),
+        ),
+        MaterialButton(
+          color: Colors.deepPurple,
+          onPressed: () async {
+            Uint8List data = port.read(100);
+            print("Data:${data}");
+
+            /*socket = await Socket.connect("localhost", 6667);
+            Uint8List data = await socket!.first;
+            print("Data:${data}");
+            String stringData = utf8.decode(data);
+            print("Data String:${stringData}");*/
+          },
+          child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 9),
+              child: const Text(
+                "Custom",
                 style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
