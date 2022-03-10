@@ -10,7 +10,12 @@ class BhavishaScreen extends StatefulWidget {
 }
 
 class _BhavishaScreenState extends State<BhavishaScreen> {
-  TextEditingController textController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController sirNameController = TextEditingController();
+  TextEditingController numberController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController somethingController = TextEditingController();
 
 
   @override
@@ -48,6 +53,7 @@ class _BhavishaScreenState extends State<BhavishaScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            SizedBox(height: 20,),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -55,7 +61,7 @@ class _BhavishaScreenState extends State<BhavishaScreen> {
                   child: NeumorphicText(
                       "Enter name:",
                       textStyle: NeumorphicTextStyle(
-                        fontSize: 40,
+                        fontSize: 20,
                       ),
                       style: NeumorphicStyle(
                         color: Colors.teal,
@@ -66,14 +72,14 @@ class _BhavishaScreenState extends State<BhavishaScreen> {
                   width: 1000,
                   child: Neumorphic(
                     child: TextField(
-                      controller: textController,
+                      controller: nameController,
                     ),
 
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 10,),
+            SizedBox(height: 20,),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -81,7 +87,7 @@ class _BhavishaScreenState extends State<BhavishaScreen> {
                   child: NeumorphicText(
                       "Enter sirname:",
                       textStyle: NeumorphicTextStyle(
-                        fontSize: 40,
+                        fontSize: 20,
                       ),
                       style: NeumorphicStyle(
                         color: Colors.teal,
@@ -92,14 +98,14 @@ class _BhavishaScreenState extends State<BhavishaScreen> {
                   width: 1000,
                   child: Neumorphic(
                     child: TextField(
-                      controller: textController,
+                      controller: sirNameController,
                     ),
 
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 10,),
+            SizedBox(height: 20,),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -107,7 +113,7 @@ class _BhavishaScreenState extends State<BhavishaScreen> {
                   child: NeumorphicText(
                       "Enter number:",
                       textStyle: NeumorphicTextStyle(
-                        fontSize: 40,
+                        fontSize: 20,
                       ),
                       style: NeumorphicStyle(
                         color: Colors.teal,
@@ -118,14 +124,14 @@ class _BhavishaScreenState extends State<BhavishaScreen> {
                   width: 1000,
                   child: Neumorphic(
                     child: TextField(
-                      controller: textController,
+                      controller: numberController,
                     ),
 
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 10,),
+            SizedBox(height: 20,),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -133,7 +139,7 @@ class _BhavishaScreenState extends State<BhavishaScreen> {
                   child: NeumorphicText(
                       "Description:",
                       textStyle: NeumorphicTextStyle(
-                        fontSize: 40,
+                        fontSize: 20,
                       ),
                       style: NeumorphicStyle(
                         color: Colors.teal,
@@ -144,14 +150,14 @@ class _BhavishaScreenState extends State<BhavishaScreen> {
                   width: 1000,
                   child: Neumorphic(
                     child: TextField(
-                      controller: textController,
+                      controller: descriptionController,
                     ),
 
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 10,),
+            SizedBox(height: 20,),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -159,7 +165,7 @@ class _BhavishaScreenState extends State<BhavishaScreen> {
                   child: NeumorphicText(
                       "Email:",
                       textStyle: NeumorphicTextStyle(
-                        fontSize: 40,
+                        fontSize: 20,
                       ),
                       style: NeumorphicStyle(
                         color: Colors.teal,
@@ -170,14 +176,14 @@ class _BhavishaScreenState extends State<BhavishaScreen> {
                   width: 1000,
                   child: Neumorphic(
                     child: TextField(
-                      controller: textController,
+                      controller: emailController,
                     ),
 
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 10,),
+            SizedBox(height: 20,),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -185,7 +191,7 @@ class _BhavishaScreenState extends State<BhavishaScreen> {
                   child: NeumorphicText(
                       "something:",
                       textStyle: NeumorphicTextStyle(
-                        fontSize: 40,
+                        fontSize: 20,
                       ),
                       style: NeumorphicStyle(
                         color: Colors.teal,
@@ -196,12 +202,23 @@ class _BhavishaScreenState extends State<BhavishaScreen> {
                   width: 1000,
                   child: Neumorphic(
                     child: TextField(
-                      controller: textController,
+                      controller: somethingController,
                     ),
 
                   ),
                 ),
               ],
+            ),
+            SizedBox(height: 20,),
+            NeumorphicButton(
+              onPressed: (){},
+              child: NeumorphicText("save",textStyle: NeumorphicTextStyle(
+                fontSize: 20,
+              ),
+                  style: NeumorphicStyle(
+                    color: Colors.teal,
+                    depth: 0,
+                  )),
             ),
           ],
         ),
