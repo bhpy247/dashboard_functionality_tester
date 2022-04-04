@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io' as io;
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
   Socket? socket;
+  int? pid;
 
 
   @override
@@ -54,8 +56,22 @@ class _HomeScreenState extends State<HomeScreen> {
           commonButton(onTap: (){
             socket!.write('Hello, Server!');
           },text: "Send"),
-          commonButton(onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context){return mainPage();}));
+          commonButton(onTap: ()async{
+
+            if(pid==null) {
+              var result = await Process.run(
+                  'C:\\Program Files\\Notepad++\\notepad++.exe', []);
+
+              pid=result.pid;
+              print("Data : $pid");
+            }
+            else
+              {
+                await Process.killPid(pid!);
+                pid=null;
+              }
+
+           // Navigator.push(context, MaterialPageRoute(builder: (context){return mainPage();}));
           },text: "M"),
         ],
       ),
