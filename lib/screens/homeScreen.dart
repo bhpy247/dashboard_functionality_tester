@@ -1,9 +1,22 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../sample/main_page.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+
+  Socket? socket;
+
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +36,24 @@ class HomeScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          commonButton(onTap: (){},text: "V"),
-          commonButton(onTap: (){},text: "H"),
-          commonButton(onTap: (){},text: "B"),
+          commonButton(onTap: ()async{
+
+            print("start connecting");
+
+            socket = await Socket.connect("localhost", 6667);
+            print("Connected");
+          },text: "Connect"),
+          commonButton(onTap: (){
+            print("Start  listing");
+            socket!.listen((data) {
+              String stringData = utf8.decode(data);
+              print("Data String:${stringData}");
+            });
+
+          },text: "Start Recieving"),
+          commonButton(onTap: (){
+            socket!.write('Hello, Server!');
+          },text: "Send"),
           commonButton(onTap: (){
             Navigator.push(context, MaterialPageRoute(builder: (context){return mainPage();}));
           },text: "M"),
@@ -34,7 +62,8 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget commonButton({Function()? onTap, String text = ""}){
+  Widget commonButton({Function()? onTap, String text = ""})
+  {
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
@@ -51,7 +80,7 @@ class HomeScreen extends StatelessWidget {
               spreadRadius: 0.5),
         ]
       ),
-      
+
       child: MaterialButton(
         padding: EdgeInsets.all(30),
       // height: 50,

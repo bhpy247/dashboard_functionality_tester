@@ -216,13 +216,15 @@ class _mainPageState extends State<mainPage> {
         MaterialButton(
           color: Colors.deepPurple,
           onPressed: () async {
-            setPort();
+           // setPort();
 
-            /*socket = await Socket.connect("localhost", 6667);
-            Uint8List data = await socket!.first;
-            print("Data:${data}");
-            String stringData = utf8.decode(data);
-            print("Data String:${stringData}");*/
+            socket = await Socket.connect("localhost", 6667);
+            socket!.listen((data) {
+              String stringData = utf8.decode(data);
+              print("Data String:${stringData}");
+            });
+
+
           },
           child: Container(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 9),
