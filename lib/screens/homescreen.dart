@@ -1,6 +1,9 @@
 import 'package:dashboard_functionality_tester/connection/connection_screen.dart';
 import 'package:dashboard_functionality_tester/graphs/screens/graph_view.dart';
+import 'package:dashboard_functionality_tester/pdfs/create_sample_pdf.dart';
 import 'package:flutter/material.dart';
+
+import '../graphs/componants/open_my_pdf.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -8,14 +11,22 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[850],
+      backgroundColor: Colors.white,
       //Colors.grey[850]
       appBar: AppBar(title: Text("Home"),),
-      body: mainBody(context),
+      body: Center(
+        child: commonButton(text: "Generate PDF",
+            onTap: ()async{
+               final pdf = await CreateSamplePdf().generatePdf(text: "My Pdf");
+               OpenMyPdf.openFile(pdf!);
+            }
+        ),
+      ),
     );
   }
 
-  Widget mainBody(context) {
+
+ /* Widget mainBody(context) {
     return Container(
       height: MediaQuery.of(context).size.height,
       padding: EdgeInsets.all(20),
@@ -34,7 +45,7 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
     );
-  }
+  }*/
 
   Widget commonButton({Function()? onTap, String text = ""}){
     return Container(
@@ -65,4 +76,5 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+
 }
