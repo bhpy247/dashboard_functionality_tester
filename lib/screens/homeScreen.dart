@@ -41,8 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
           commonButton(onTap: ()async{
 
             print("start connecting");
-
-            socket = await Socket.connect("localhost", 6667);
+            socket = await Socket.connect("192.168.29.126", 6667);
             print("Connected");
           },text: "Connect"),
           commonButton(onTap: (){
@@ -50,12 +49,24 @@ class _HomeScreenState extends State<HomeScreen> {
             socket!.listen((data) {
               String stringData = utf8.decode(data);
               print("Data String:${stringData}");
+
+              if(stringData.contains("data:"))
+                {
+                  Map val=json.decode(stringData.replaceAll("data:", ""));
+                  print("Val  : ${val}");
+                }
+
+
             });
 
           },text: "Start Recieving"),
           commonButton(onTap: (){
-            socket!.write('Hello, Server!');
+            socket!.write('Hello, Server!\n');
           },text: "Send"),
+          commonButton(onTap: (){
+            socket!.destroy();
+            socket!.close();
+          },text: "Stop"),
           commonButton(onTap: ()async{
 
             if(pid==null) {
