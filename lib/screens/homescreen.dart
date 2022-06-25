@@ -1,15 +1,31 @@
 import 'package:dashboard_functionality_tester/connection/connection_screen.dart';
 import 'package:dashboard_functionality_tester/graphs/screens/graph_view.dart';
 import 'package:dashboard_functionality_tester/pdfs/create_sample_pdf.dart';
+import 'package:dashboard_functionality_tester/sample_graph/graph_view_page.dart';
 import 'package:flutter/material.dart';
 
 import '../graphs/componants/open_my_pdf.dart';
+import '../model/bubblePointModel.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  BubblePointModel  bubblePointModel = BubblePointModel(
+      ans: [
+        578.5234966216216,3763.581428571427,-4506.393552631579,4969.262608695657,-5708.098500000003,7278.568085106381
+      ],
+      t: [
+        6.0,7.0,7.0,8.0,8.0,9.0
+      ]
+  );
+  @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.white,
       //Colors.grey[850]
@@ -17,14 +33,18 @@ class HomeScreen extends StatelessWidget {
       body: Center(
         child: commonButton(text: "Generate PDF",
             onTap: ()async{
-               final pdf = await CreateSamplePdf().generatePdf(text: "My Pdf");
-               OpenMyPdf.openFile(pdf!);
+
+              Navigator.push(context, MaterialPageRoute(builder: (context){
+                return GraphViewPage(
+                  bubblePointModel: bubblePointModel,
+
+                );
+              }));
             }
         ),
       ),
     );
   }
-
 
  /* Widget mainBody(context) {
     return Container(
@@ -46,7 +66,6 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }*/
-
   Widget commonButton({Function()? onTap, String text = ""}){
     return Container(
       decoration: BoxDecoration(
@@ -64,7 +83,7 @@ class HomeScreen extends StatelessWidget {
               spreadRadius: 0.5),
         ]
       ),
-      
+
       child: MaterialButton(
         padding: EdgeInsets.all(30),
       // height: 50,
@@ -76,5 +95,4 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-
 }

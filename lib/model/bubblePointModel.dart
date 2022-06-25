@@ -1,4 +1,4 @@
-class bubblePointModel {
+class BubblePointModel {
   String testname = "";
   List<double> p1 = [];
   List<double> p2 = [];
@@ -26,7 +26,7 @@ class bubblePointModel {
   double samplediameter = 0.0;
   String materialclassification = "";
 
-  bubblePointModel(
+  BubblePointModel(
       {this.testname = "",
         this.p1 = const [],
         this.p2 = const [],
@@ -55,7 +55,7 @@ class bubblePointModel {
         this.materialclassification = "",
       });
 
-  bubblePointModel.fromJson(Map<String, dynamic> json) {
+  BubblePointModel.fromJson(Map<String, dynamic> json) {
     testname = json['testname'];
     p1 = json['p1'].cast<int>();
     p2 = json['p2'].cast<int>();
