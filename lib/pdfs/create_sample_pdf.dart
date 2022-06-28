@@ -13,7 +13,6 @@ class CreateSamplePdf{
     final firstPageBackGroundImage=(await rootBundle.load('assets/common/bubblepoint_image.png')).buffer.asUint8List();
     final headerLogoImage=(await rootBundle.load('assets/common/M19_singlelogo.png')).buffer.asUint8List();
 
-
     pdf.addPage(
       Page(
          pageFormat: PdfPageFormat.a4,
@@ -21,7 +20,6 @@ class CreateSamplePdf{
           build: (context){
              return getFirstPage(backgroundImage: firstPageBackGroundImage,logoImage: firstPageLogoImage);
           },
-
       ),
     );
 
@@ -51,7 +49,19 @@ class CreateSamplePdf{
             },
           build: (context){
             return [
-              getText(text: "Dummy"),
+              getSampleInformation(),
+              SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(child:
+                  getSampleBriefInfoBox(heading: "Bubble Point Pressure",value: "0.2",unit: "torr"),
+                  ),
+                  SizedBox(width: 5),
+                  Expanded(
+                   child:getSampleBriefInfoBox(heading: "Bubble Point Diameter",value: "27.66",unit: "mm"),
+                  )
+                ]
+              )
 
 
             ];
@@ -123,36 +133,53 @@ class CreateSamplePdf{
       ),
     );
 
-
     pdf.addPage(
       MultiPage(
         pageFormat: PdfPageFormat.a4,
           margin: EdgeInsets.symmetric(horizontal: 30,vertical: 40),
           header: (context){
-          return Row(
-            children: [
-              Expanded(child:Divider(thickness: 1.2,color: PdfColors.blueGrey800),),
-              SizedBox(width: 5),
-              Image(MemoryImage(headerLogoImage),height: 55,width: 55)
-            ]
-          );},
+          return
+            Column(
+              children: [
+                Row(
+                    children: [
+                      Expanded(child:Divider(thickness: 1.2,color: PdfColors.blueGrey800),),
+                      SizedBox(width: 5),
+                      Image(MemoryImage(headerLogoImage),height: 55,width: 55)
+                    ]
+                ),
+                SizedBox(height: 20)
+              ]
+            );},
           
           build:(context){
-          return List.generate(20, (index) =>
-          Container(
-              margin: EdgeInsets.symmetric(horizontal: 30,vertical: 40),
-              padding: EdgeInsets.symmetric(horizontal: 30,vertical: 40),
-              decoration: BoxDecoration(
-                border: Border.all(width: 1)
-              ),
-              child: getText(text: "solution of all stuff")
-             )
-           );
+
+          return [
+            Table.fromTextArray(
+              cellDecoration: (index, data, rowNum) {
+                return BoxDecoration(
+                  color: rowNum%2==0?PdfColors.grey200:PdfColors.white,
+                );
+              },
+              headers: [
+                  "Flow\ncfm",
+                  "Differential Pressure\n(torr)",
+                  "F/PT",
+              ],
+              data: List.generate(50, (index) => ["0.4581215","0.4581","7854.155"]),
+              headerStyle: TextStyle(fontWeight: FontWeight.bold,color: PdfColors.white),
+              headerAlignment: Alignment.center,
+              headerDecoration: BoxDecoration(color: PdfColors.grey600),
+              border: TableBorder.symmetric(inside: BorderSide.none,outside: BorderSide(color: PdfColors.grey300)),
+              cellAlignment: Alignment.center,
+
+            ),
+          ];
+
           },
           footer: (context){
             //final text="Page ${context.pageNumber}";
-            return
-              Row(
+            return Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
@@ -168,14 +195,10 @@ class CreateSamplePdf{
         ),
     );
 
-
-
-
-
     return OpenMyPdf.saveDocument(pdf: pdf, name: "MyPdf");
   }
 
-   Widget getText({required String text,double fontSize = 12,PdfColor? color,FontWeight? fontWeight,TextAlign? textAlign}){
+  Widget getText({required String text,double fontSize = 12,PdfColor? color,FontWeight? fontWeight,TextAlign? textAlign}){
     return Text(text, style: TextStyle(fontSize: fontSize,color:color,fontWeight:fontWeight,),textAlign:textAlign );
   }
 
@@ -183,8 +206,7 @@ class CreateSamplePdf{
     return   Text(text, style: TextStyle(fontSize: fontSize,color: PdfColor.fromHex(CustomPDFColors.blueColor)),);
   }
 
-
-   Widget getFirstPage({final logoImage,final backgroundImage}){
+  Widget getFirstPage({final logoImage,final backgroundImage}){
      return Column(
        children: [
          Row(
@@ -243,65 +265,75 @@ class CreateSamplePdf{
      ) ;
    }
 
+  Widget getSampleInformation(){
+    return Container(
+
+        child:Column(
+      children:[
+        Container(
+          width: double.maxFinite,
+          padding: EdgeInsets.symmetric(vertical: 7),
+          decoration: BoxDecoration(
+            color: PdfColors.grey600
+          ),
+          child: getText(text: "Sample Information",textAlign: TextAlign.center,color: PdfColors.white,fontWeight: FontWeight.bold),
+        ),
+        getSampleInfoRow(title: "Customer ID",value: "N008",color: PdfColors.white),
+        getSampleInfoRow(title: "Customer ID",value: "N008",color: PdfColors.grey200),
+
+      ]
+    ));
+  }
+
+  Widget getSampleInfoRow({required String title,required String value,required PdfColor color}){
+    return Container(
+      color: color,
+        child: Row(
+      children: [
+        Expanded(child:
+        Container(
+            padding: EdgeInsets.symmetric(vertical: 5,horizontal: 5),
+            decoration: BoxDecoration(
+            border: Border(right: BorderSide(color: PdfColors.grey400))
+          ),
+            child:getText(text: title,textAlign: TextAlign.left,fontWeight: FontWeight.bold)
+        )
+        ),
+        Expanded(child:
+        Container(
+            padding: EdgeInsets.symmetric(vertical: 5,horizontal: 5),
+          child: getText(text: value,textAlign: TextAlign.left)),
+
+        )
+      ]
+    ));
+  }
+
+  Widget getSampleBriefInfoBox({required String heading,required String value,required String unit,}){
+    return Column(
+      children: [
+        Container(
+          width: double.maxFinite,
+          padding: EdgeInsets.symmetric(vertical: 7),
+          decoration: BoxDecoration(
+              color: PdfColors.grey600
+          ),
+          child: getText(text: heading,textAlign: TextAlign.center,color: PdfColors.white,fontWeight: FontWeight.bold),
+        ),
+        Container(
+          width: double.maxFinite,
+          padding: EdgeInsets.symmetric(vertical: 7),
+          decoration: BoxDecoration(
+              color: PdfColors.grey200
+          ),
+          child: getText(text: "$value\n$unit",textAlign: TextAlign.center,color: PdfColors.grey900,fontWeight: FontWeight.bold),
+        ),
+
+      ]
+    );
+  }
+
+
+
 }
 
-/*
-
-
-Table(
-children: [
-TableRow(
-decoration: BoxDecoration(
-color: PdfColors.grey300
-),
-children: [
-Row(
-mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-children: [
-getText(text: "Customer ID",textAlign: TextAlign.center),
-getText(text: "873137",textAlign: TextAlign.center),
-]),
-]
-),
-TableRow(
-decoration: BoxDecoration(
-color: PdfColors.grey300
-),
-children: [
-Row(children: [
-getText(text: "Customer ID",textAlign: TextAlign.center),
-getText(text: "873137",textAlign: TextAlign.center),
-]),
-]
-),
-TableRow(
-decoration: BoxDecoration(
-color: PdfColors.grey300
-),
-children: [
-Row(children: [
-getText(text: "Customer ID",textAlign: TextAlign.center),
-getText(text: "873137",textAlign: TextAlign.center),
-]),
-]
-),
-
-]
-
-// headers: ["Sample Information"],
-// data:[
-// ["viren"],
-// ["viren"],
-// ["viren"],
-// ["viren"],
-// ["viren"],
-// ["viren"],
-//
-//
-//
-//
-// ],
-// headerStyle: TextStyle(fontWeight: FontWeight.bold),
-// headerDecoration: BoxDecoration(color: PdfColors.grey300)
-
-)*/

@@ -33,11 +33,9 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Center(
         child: commonButton(text: "Generate PDF",
             onTap: ()async{
-
               Navigator.push(context, MaterialPageRoute(builder: (context){
                 return GraphViewPage(
                   bubblePointModel: bubblePointModel,
-
                 );
               }));
             }
