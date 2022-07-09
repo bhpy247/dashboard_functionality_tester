@@ -84,6 +84,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
            // Navigator.push(context, MaterialPageRoute(builder: (context){return mainPage();}));
           },text: "M"),
+          commonButton(onTap: (){
+            Navigator.pushNamed(context, '/testScreen');
+
+          },
+          text: "Test"),
         ],
       ),
     );
