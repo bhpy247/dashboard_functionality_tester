@@ -28,7 +28,8 @@ class _mainPageState extends State<mainPage> {
 
   @override
   void initState() {
-    initPorts();
+    //initPorts();
+    port = SerialPort("COM13");
     super.initState();
    // dropdownList = [];
   }
@@ -42,6 +43,8 @@ class _mainPageState extends State<mainPage> {
   }
 
   void setPort() {
+
+
     print("set port");
     if (port.isOpen) {
       print("port is open");
@@ -49,15 +52,41 @@ class _mainPageState extends State<mainPage> {
       print("port is close");
     }
 
-    port.config.baudRate = 115200;
-    port.config.bits=8;
-    port.config.stopBits=1;
-    port.config.parity=0;
+    port.openReadWrite();
 
-    port.openRead();
+    // port.config.baudRate = 9600;
+    // port.config.bits=8;
+    // port.config.stopBits=1;
+    // port.config.parity=;
 
-    print(port.isOpen);
-    print(port.isOpen);
+   port.config.rts=0;
+   //print("${port.drain()}");
+   port.openRead();
+   Future.delayed(Duration(seconds: 3),(){
+     port.config.rts=1;
+     port.openRead();
+   });
+
+
+
+    //  reader = SerialPortReader(port,timeout: 5000);
+   //
+   //  /*reader.stream.forEach((element) {
+   //    print('received: ${String.fromCharCodes(element)}');
+   //  }).asStream();*/
+   //
+   //  reader.stream.listen(
+   //          (data) {
+   //        print('received: $data');
+   //        print('received: ${String.fromCharCodes(data)}');
+   //        // displayData += data.toString();
+   //        //print('received: $data');
+   //      },
+   //      onDone: (){print("on done");}
+   //  ).onError((e){
+   //    print("on Error $e");
+   //  });
+
   }
 
   void startReading()  {
@@ -82,7 +111,7 @@ class _mainPageState extends State<mainPage> {
     print("start reading");
   }
 
-  void sendData() {
+ /* void sendData() {
     try {
       String data = "\n\rCOP11CE\n";
 
@@ -104,11 +133,16 @@ class _mainPageState extends State<mainPage> {
     } catch (e) {
       print("Error  : $e");
     }
+  }*/
+
+  void sendData() async{
+    port.config.dtr = 0;
+    Future.delayed(Duration(seconds: 1));
+    port.config.dtr =1;
   }
 
   @override
   Widget build(BuildContext context) {
-    port = SerialPort("COM6");
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -279,7 +313,7 @@ class _mainPageState extends State<mainPage> {
                 )),
           ),
 
-          // SizedBox(
+           // SizedBox(
           //   height: 10,
           // ),
           // Flexible(
