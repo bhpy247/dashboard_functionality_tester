@@ -1,5 +1,4 @@
 import 'package:dashboard_functionality_tester/screens/homeScreen.dart';
-import 'package:dashboard_functionality_tester/screens/test_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -19,7 +18,7 @@ class MyApp extends StatelessWidget {
       initialRoute: "/",
       routes: {
         "/": (context) => const HomeScreen(),
-        "/testScreen" : (context) => const TestScreen(),
+        //"/testScreen" : (context) => const TestScreen(),
 
       },
     );

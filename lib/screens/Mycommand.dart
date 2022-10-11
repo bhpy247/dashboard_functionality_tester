@@ -6,6 +6,10 @@ class MyCommand {
   static void hardReset() {
     Connection().sendData("hardReset");
   }
+  static void connect(String port) {
+    Connection().sendData("connect,$port");
+
+  }
 
   static void sendNormalMsg(String msg){
     Connection().sendData("normal,$msg");
