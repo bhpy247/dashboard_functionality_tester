@@ -1,3 +1,4 @@
+import 'package:dashboard_functionality_tester/new_package.dart';
 import 'package:flutter/material.dart';
 
 import '../sample/main_page.dart';
@@ -27,7 +28,7 @@ class HomeScreen extends StatelessWidget {
           commonButton(onTap: (){},text: "H"),
           commonButton(onTap: (){},text: "B"),
           commonButton(onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context){return mainPage();}));
+            Navigator.push(context, MaterialPageRoute(builder: (context){return NewPackage();}));
           },text: "M"),
         ],
       ),
