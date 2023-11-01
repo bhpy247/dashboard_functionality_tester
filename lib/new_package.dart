@@ -31,6 +31,7 @@ class _NewPackageState extends State<NewPackage> {
         Uint8List bytes=Uint8List.fromList(list);
         print(" in fma : ${result.length}");
         list = MyCommands().getAdcData(bytes);
+        print("ADC List:$list");
       }
       outData = outData.substring(index+1,outData.length);
       print("val: $result");
@@ -51,7 +52,7 @@ class _NewPackageState extends State<NewPackage> {
 
 
   void setPort()async{
-    port = SerialPort("COM13", openNow: false, ByteSize: 8, ReadIntervalTimeout: 10, ReadTotalTimeoutConstant: 100);
+    port = SerialPort("COM5", openNow: false, ByteSize: 8, ReadIntervalTimeout: 10, ReadTotalTimeoutConstant: 100);
 //port.open()
 
     if(port.isOpened)
@@ -95,6 +96,11 @@ class _NewPackageState extends State<NewPackage> {
     await Future.delayed(Duration(seconds: 2));
     data="\n\rFMS--CE\n";
     port.writeBytesFromString(data);
+    await Future.delayed(Duration(seconds: 2));
+
+    print("Setting Valve Latching");
+    bool isValveLatchingSuccess = port.writeBytesFromString("\n\rLV00000000000000CE\n");
+    print("Setted Valve Latching:$isValveLatchingSuccess");
   }
 
   void refresh(){

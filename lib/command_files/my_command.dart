@@ -127,13 +127,15 @@ class MyCommands
 
   }
 
-  static void setDelay(int miliseconds, int delay) {
+  static void setDelay(int miliseconds, int delay) async {
 
     Uint8List command;
     List<int> list = "FML".codeUnits;
-    Uint8List bytes=Uint8List.fromList(list);
-    bytes.addAll(Uint8List.fromList(getBitFromInt(miliseconds)));
-    command = WritingFormat.writeUint8Format(bytes);
+    List<int> bytes = [
+      ..."FML".codeUnits,
+      ...getBitFromInt(miliseconds),
+    ];
+    command = WritingFormat.writeUint8Format(Uint8List.fromList(bytes));
     sendUint8Data(command, delay);
 
   }

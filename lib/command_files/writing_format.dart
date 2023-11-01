@@ -11,11 +11,14 @@ class WritingFormat
   }
 
   static Uint8List writeUint8Format(Uint8List val){
-    List<int> list = "\n\r".codeUnits;
-    Uint8List bytes=Uint8List.fromList(list);
-    bytes.addAll(val);
-    list = "CE\n".codeUnits;
-    bytes.addAll(Uint8List.fromList(list));
+    List<int> finalList = [
+      ..."\n\r".codeUnits,
+      ...val,
+      ..."CE\n".codeUnits,
+    ];
+
+    Uint8List bytes = Uint8List.fromList(finalList);
+
     return bytes;
   }
 
