@@ -61,11 +61,13 @@ class _NewPackage2State extends State<NewPackage2> {
     return a;
   }
 
+
+
   void setPort() async {
     port = SerialPort(
       "COM7",
       openNow: false,
-      ByteSize: 8,
+      ByteSize: 1,
       ReadIntervalTimeout: 1,
       ReadTotalTimeoutConstant: 1,
     );
@@ -82,18 +84,24 @@ class _NewPackage2State extends State<NewPackage2> {
     port.setFlowControlSignal(SerialPort.CLRDTR);
 
     port.readBytesOnListen(
-      32,
+      64,
       (Uint8List value) {
         // print("readBytesOnListen called at ${DateTime.now().toIso8601String()}");
 
-        // print("Reading:$value");
+        print("Reading:\n$value");
         String newString = String.fromCharCodes(value);
-        // print("newString:'$newString'");
+        print("newString:\n'$newString'");
 
-        // showResult(value);
-        calculateCommand(currentReadings: value);
+        currentCommand += newString;
+        print("currentCommand.codeUnits:\n${currentCommand.codeUnits}");
+        print("currentCommand:\n'$currentCommand'");
+
+        calculateCommandV2(currentReadings: value).forEach((List<int> adcList) {
+          print("ADC List:$adcList at ${DateTime.now().difference(lastCommandTime).inMilliseconds} Milliseconds");
+          lastCommandTime = DateTime.now();
+        });
       },
-      dataPollingInterval: Duration(milliseconds: 50),
+      dataPollingInterval: const Duration(milliseconds: 1),
     );
   }
 
@@ -116,23 +124,56 @@ class _NewPackage2State extends State<NewPackage2> {
     }
   }
 
-  void calculateCommand({required Uint8List currentReadings}) {
-    String newString = String.fromCharCodes(currentReadings);
-
-    currentCommand += newString;
-    print(currentCommand);
-
+  Iterable<List<int>> calculateCommand({required Uint8List currentReadings}) sync* {
     String start = "\n\r";
     String end = "E\n";
 
-    if (currentCommand.contains(start) && currentCommand.contains(end)) {
+    int startIndex = currentCommand.indexOf(start);
+    int endIndex = currentCommand.indexOf(end);
+
+    while(startIndex > -1 || endIndex > -1) {
+      if(startIndex > -1 && endIndex > -1) {
+        if(endIndex <= startIndex) {
+          currentCommand = currentCommand.substring(endIndex + end.length);
+        }
+        else {
+          String mainCommand = currentCommand.substring(startIndex + start.length, endIndex);
+          print("main command:\n'$mainCommand'");
+
+          if (mainCommand.contains("FMA")) {
+            List<int> list = "\r$mainCommand".codeUnits;
+            Uint8List bytes = Uint8List.fromList(list);
+            // print(" in fma : ${result.length}");
+            list = MyCommands().getAdcData(bytes);
+            yield list;
+          }
+
+          currentCommand = currentCommand.substring(endIndex + end.length);
+        }
+      }
+      else if(startIndex > -1) {
+        break;
+      }
+      else if(endIndex > -1) {
+        currentCommand = currentCommand.substring(endIndex + end.length);
+      }
+
+      startIndex = currentCommand.indexOf(start);
+      endIndex = currentCommand.indexOf(end);
+    }
+
+
+
+
+
+    /*if (currentCommand.contains(start) && currentCommand.contains(end)) {
       int startIndex = currentCommand.indexOf(start);
       int endIndex = currentCommand.indexOf(end, startIndex + start.length);
 
-      String command = start + currentCommand.substring(startIndex + start.length, endIndex) + end;
+      // String command = start + currentCommand.substring(startIndex + start.length, endIndex) + end;
 
       String mainCommand = currentCommand.substring(startIndex + start.length, endIndex);
-      print("main command:'$mainCommand'");
+      print("main command:\n'$mainCommand'");
 
       if (mainCommand.contains("FMA")) {
         List<int> list = "\r$mainCommand".codeUnits;
@@ -145,12 +186,35 @@ class _NewPackage2State extends State<NewPackage2> {
       }
 
       currentCommand = currentCommand.substring(endIndex + end.length);
+    }*/
+  }
+
+  Iterable<List<int>> calculateCommandV2({required Uint8List currentReadings}) sync* {
+    String start = "\n\rFMA";
+
+    int startIndex = currentCommand.indexOf(start);
+
+    while(startIndex > -1) {
+      if(currentCommand.length >= (startIndex + start.length + 45)) {
+        String commandForADCBits = currentCommand.substring(startIndex + 1);
+        List<int> list = commandForADCBits.codeUnits;
+        Uint8List bytes = Uint8List.fromList(list);
+        List<int> adcData = MyCommands().getAdcData(bytes);
+        yield adcData;
+
+        currentCommand = currentCommand.substring(startIndex + start.length + 45);
+      }
+      else {
+        break;
+      }
+
+      startIndex = currentCommand.indexOf(start);
     }
   }
 
   void sendData() async {
     //String data="\n\rFMS--CE\n";
-    setDelay(400, 0);
+    setDelay(600, 0);
     await Future.delayed(const Duration(seconds: 2));
     String data = "\n\rFMAE111110000000000CE\n";
     port.writeBytesFromString(data);
@@ -164,9 +228,14 @@ class _NewPackage2State extends State<NewPackage2> {
     // print("Setted Valve Latching:$isValveLatchingSuccess");
   }
 
-  void refresh() {
+  Future<void> refresh() async {
     String data = "\n\rFMX--CE\n";
     port.writeBytesFromString(data);
+
+    await Future.delayed(const Duration(seconds: 5));
+
+    port.readBytesOnListen(64, (value) => null);
+    port.close();
   }
 
   @override
