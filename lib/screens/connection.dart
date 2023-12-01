@@ -10,6 +10,7 @@ class Connection {
     try {
       Constants.socket = await Socket.connect(ip, port);
       MyCommand.connect(com);
+      Connection().startReading();
     } catch (e) {
       print("Can't connect : $e");
     }
@@ -20,18 +21,38 @@ class Connection {
       if (Constants.socket == null) return;
 
       Constants.socket!.listen((data) {
-        print("Data String:${data}");
+        print("Data String1:${data.join(" ")}");
 
-        String stringData = utf8.decode(data);
-        print("Data String:${stringData}");
-
-        if (stringData.contains("data:")) {
-          Map val = json.decode(stringData.replaceAll("data:", ""));
-          print("Val  : ${val}");
-        }
+        if(data[0]==109 && data[1]==115 && data[2]==103)
+          {
+            print("msg");
+          }
         else{
-          print("machine:${stringData}");
+          String stringData = utf8.decode(data);
+          print("Data String2:${stringData}");
+          if (stringData.contains("data:")) {
+            Map val = json.decode(stringData.replaceAll("data:", ""));
+
+            print("Val  : ${val}");
+          }
+
         }
+
+
+
+
+
+        // String stringData = utf8.decode(data);
+        // print("Data String2:${stringData}");
+        //
+        // if (stringData.contains("data:")) {
+        //   Map val = json.decode(stringData.replaceAll("data:", ""));
+        //
+        //  // print("Val  : ${val}");
+        // }
+        // else{
+        //   //print("machine:${stringData}");
+        // }
       });
     } catch (e) {
       print("Can't reading : $e");

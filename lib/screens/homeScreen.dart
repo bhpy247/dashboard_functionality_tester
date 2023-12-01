@@ -1,10 +1,8 @@
 import 'dart:convert';
-import 'dart:io' as io;
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import '../sample/main_page.dart';
 import 'Mycommand.dart';
 import 'connection.dart';
 
@@ -41,7 +39,9 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           commonButton(text: "connect",onTap: (){
-            Connection().connect('192.168.29.126', 6667, "COM3");}),
+            Connection().connect('192.168.29.79', 6667, "COM6");
+
+          }),
           commonButton(text: "Start Sending",onTap: ()async{
             MyCommand.setDACValue("2", 30000, 0);
             await Future.delayed(Duration(seconds: 1));
