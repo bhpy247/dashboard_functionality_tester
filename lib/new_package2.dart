@@ -65,7 +65,7 @@ class _NewPackage2State extends State<NewPackage2> {
 
   void setPort() async {
     port = SerialPort(
-      "COM7",
+      "COM5",
       openNow: false,
       ByteSize: 1,
       ReadIntervalTimeout: 1,
@@ -86,7 +86,7 @@ class _NewPackage2State extends State<NewPackage2> {
     port.readBytesOnListen(
       64,
       (Uint8List value) {
-        // print("readBytesOnListen called at ${DateTime.now().toIso8601String()}");
+        print("readBytesOnListen called at ${DateTime.now().toIso8601String()}");
 
         print("Reading:\n$value");
         String newString = String.fromCharCodes(value);
@@ -101,7 +101,7 @@ class _NewPackage2State extends State<NewPackage2> {
           lastCommandTime = DateTime.now();
         });
       },
-      dataPollingInterval: const Duration(milliseconds: 1),
+      dataPollingInterval: const Duration(milliseconds: 500),
     );
   }
 
