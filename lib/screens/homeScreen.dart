@@ -1,10 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'Mycommand.dart';
 import 'connection.dart';
+import 'dart:io' as io;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -79,6 +83,56 @@ class _HomeScreenState extends State<HomeScreen> {
           commonButton(text: "Disconnect",onTap: (){
             Connection().disConnect();
           }),
+          commonButton(onTap: ()async{
+            final dir = await getApplicationDocumentsDirectory();
+            print("dir : $dir");
+
+
+            String path=dir.path+"/main.jar";
+
+            if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound) {
+              print("not found");
+              ByteData data = await rootBundle.load("asset/main.jar");
+              List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+              await File(path).writeAsBytes(bytes);
+            }
+            else
+              {
+                print("found");
+              }
+            //
+            //
+            // File f=File(dir.path);
+            //
+            //
+            //
+            // if(f.existsSync())
+            //   {
+            //     print("found");
+            //   }
+            // else
+            //   {
+            //     print("not found");
+            //   }
+            // List file = io.Directory("${dir.path}").listSync();
+            //
+            // print("files : ${file}");
+            if(pid==null) {
+              // var result = await Process.run(
+              //     'C:\\Program Files\\Notepad++\\notepad++.exe', []);
+              var result = await Process.run(path, []);
+
+              pid=result.pid;
+              print("Data : $pid");
+            }
+            else
+            {
+              await Process.killPid(pid!);
+              pid=null;
+            }
+
+            // Navigator.push(context, MaterialPageRoute(builder: (context){return mainPage();}));
+          },text: "M"),
         ],
       )
     );
@@ -120,18 +174,22 @@ class _HomeScreenState extends State<HomeScreen> {
         },text: "Stop"),
         commonButton(onTap: ()async{
 
-          if(pid==null) {
-            var result = await Process.run(
-                'C:\\Program Files\\Notepad++\\notepad++.exe', []);
 
-            pid=result.pid;
-            print("Data : $pid");
-          }
-          else
-          {
-            await Process.killPid(pid!);
-            pid=null;
-          }
+          // if(pid==null) {
+          //   // var result = await Process.run(
+          //   //     'C:\\Program Files\\Notepad++\\notepad++.exe', []);
+          //   print("dir  :$dir");
+          //   var result = await Process.run(
+          //       "asset\\main.jar", []);
+          //
+          //   pid=result.pid;
+          //   print("Data : $pid");
+          // }
+          // else
+          // {
+          //   await Process.killPid(pid!);
+          //   pid=null;
+          // }
 
           // Navigator.push(context, MaterialPageRoute(builder: (context){return mainPage();}));
         },text: "M"),
