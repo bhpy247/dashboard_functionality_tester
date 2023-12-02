@@ -88,12 +88,25 @@ class _HomeScreenState extends State<HomeScreen> {
             final dir = await getApplicationDocumentsDirectory();
             print("dir : $dir");
             String path=dir.path+"\\main.jar";
-
+            String path1=dir.path+"\\rxtxParallel.dll";
+            String path2=dir.path+"\\rxtxSerial.dll";
             if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound) {
               print("not found , so create file from asset to local");
               ByteData data = await rootBundle.load("asset/main.jar");
               List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
               await File(path).writeAsBytes(bytes);
+            }
+            if (FileSystemEntity.typeSync(path1) == FileSystemEntityType.notFound) {
+              print("not found , so create file from asset to local");
+              ByteData data = await rootBundle.load("asset/rxtxParallel.dll");
+              List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+              await File(path1).writeAsBytes(bytes);
+            }
+            if (FileSystemEntity.typeSync(path2) == FileSystemEntityType.notFound) {
+              print("not found , so create file from asset to local");
+              ByteData data = await rootBundle.load("asset/rxtxSerial.dll");
+              List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+              await File(path2).writeAsBytes(bytes);
             }
 
             // print("files : ${file}");
