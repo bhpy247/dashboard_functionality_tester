@@ -43,7 +43,8 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           commonButton(text: "connect",onTap: (){
-            Connection().connect('192.168.29.79', 6667, "COM6");
+          //  Connection().connect('192.168.29.79', 6667, "COM6");
+            Connection().connect('localhost', 6667, "COM6");
 
           }),
           commonButton(text: "Start Sending",onTap: ()async{
@@ -86,53 +87,51 @@ class _HomeScreenState extends State<HomeScreen> {
           commonButton(onTap: ()async{
             final dir = await getApplicationDocumentsDirectory();
             print("dir : $dir");
-
-
-            String path=dir.path+"/main.jar";
+            String path=dir.path+"\\main.jar";
 
             if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound) {
-              print("not found");
+              print("not found , so create file from asset to local");
               ByteData data = await rootBundle.load("asset/main.jar");
               List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
               await File(path).writeAsBytes(bytes);
             }
-            else
-              {
-                print("found");
-              }
-            //
-            //
-            // File f=File(dir.path);
-            //
-            //
-            //
-            // if(f.existsSync())
-            //   {
-            //     print("found");
-            //   }
-            // else
-            //   {
-            //     print("not found");
-            //   }
-            // List file = io.Directory("${dir.path}").listSync();
-            //
-            // print("files : ${file}");
-            if(pid==null) {
-              // var result = await Process.run(
-              //     'C:\\Program Files\\Notepad++\\notepad++.exe', []);
-              var result = await Process.run(path, []);
 
-              pid=result.pid;
-              print("Data : $pid");
-            }
-            else
-            {
-              await Process.killPid(pid!);
-              pid=null;
-            }
+            // print("files : ${file}");
+             path=dir.path+"\\main.jar";
+             print("path : $path");
+             Process.run('java', [
+              '-jar',
+              path,
+            ]).then((ProcessResult results) {
+              print(results.stdout);
+              print(results.stderr);
+            })
+                .catchError((e) {
+              print(e);
+            });
 
             // Navigator.push(context, MaterialPageRoute(builder: (context){return mainPage();}));
-          },text: "M"),
+          },text: "Run Process"),
+          commonButton(onTap: ()async{
+
+            String javaBinPath = '${Platform.environment['JAVA_HOME']}\\bin';
+            String javapath="C:\\Program Files\\Java\\jdk1.8.0_221\\bin";
+            print("path : $javapath");
+            var jps = Process.runSync('jps', [], workingDirectory: javapath, runInShell: true);
+
+            for (var line in LineSplitter.split(jps.stdout)) {
+              List<String> parts = line.split(' ');
+              int pid = int.parse(parts[0]);
+              String name = parts[1];
+              if (name == 'main.jar') {
+                print("main jar detected $pid");
+                Process.killPid(pid);
+                break;
+              }
+            }
+            print("done");
+            // Navigator.push(context, MaterialPageRoute(builder: (context){return mainPage();}));
+          },text: "Delete Process"),
         ],
       )
     );
