@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:dashboard_functionality_tester/screens/Mycommand.dart';
 
@@ -20,20 +21,22 @@ class Connection {
     try {
       if (Constants.socket == null) return;
 
-      Constants.socket!.listen((data) {
+      Constants.socket!.listen((Uint8List data) {
         print("Data String1:${data.join(" ")}");
 
         if(data[0]==109 && data[1]==115 && data[2]==103)
           {
-            print("msg");
+            List<int> bytes = data.toList()..removeWhere((element) => element > 127);
+            String stringData = utf8.decode(bytes);
+            print("msg:$stringData");
           }
         else{
           String stringData = utf8.decode(data);
-          print("Data String2:${stringData}");
+          print("Data String2:$stringData");
           if (stringData.contains("data:")) {
             Map val = json.decode(stringData.replaceAll("data:", ""));
 
-            print("Val  : ${val}");
+            print("Val  : $val");
           }
 
         }
